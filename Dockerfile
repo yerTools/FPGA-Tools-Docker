@@ -127,7 +127,8 @@ RUN apt install apt-transport-https curl gnupg -y && \
     apt-get install bazel -y
 
 # Build Verible 
-RUN git clone https://github.com/chipsalliance/verible.git && \
+RUN apt install bazel-7.6.0 -y && \
+    git clone https://github.com/chipsalliance/verible.git && \
     cd verible && \
     bazel build -c opt :install-binaries && \
     .github/bin/simple-install.sh ../usr/local/bin && \
