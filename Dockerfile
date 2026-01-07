@@ -20,9 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+# Thank you to Dmitry Ryabikov! This Dockerfile ended hours of trying to get Gowin to work on my machine. <3
+# - Felix :)
+
 FROM ubuntu:latest
 
-LABEL maintainer="dmitryryabickov@yandex.ru"
+LABEL maintainer="FelixM@yer.tools"
 
 # Build Gowin Education
 RUN apt-get update -y && \
@@ -32,7 +35,14 @@ RUN wget https://cdn.gowinsemi.com.cn/Gowin_V1.9.10.03_Education_linux.tar.gz &&
     mkdir gowin && \
     tar -xf Gowin_V1.9.10.03_Education_linux.tar.gz -C gowin
 
-ENV PATH="/gowin/IDE/bin:$PATH"
+# Fix libz.so.1 conflict
+RUN mv gowin/Programmer/bin/libz.so.1 gowin/Programmer/bin/libz.so.1.bak
+
+# Install udev rules
+RUN mkdir -p /etc/udev/rules.d && \
+    cp gowin/Programmer/Driver/50-programmer_usb.rules /etc/udev/rules.d/
+
+ENV PATH="/gowin/IDE/bin:/gowin/Programmer/bin:$PATH"
 ENV LD_PRELOAD="/usr/lib/x86_64-linux-gnu/libfreetype.so.6"
 
 # Build Icarus Verilog
@@ -134,3 +144,34 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Install openFPGALoader (https://wiki.sipeed.com/hardware/en/tang/common-doc/flash-in-linux)
+RUN apt-get update -y && \
+    apt-get install -y \
+    libftdi1-2 \
+    libftdi1-dev \
+    libhidapi-hidraw0 \
+    libhidapi-dev \
+    libudev-dev \
+    zlib1g-dev \
+    cmake \
+    pkg-config \
+    make \
+    g++ && \
+    git clone https://github.com/trabucayre/openFPGALoader.git && \
+    cd openFPGALoader && \
+    mkdir build && \
+    cd build && \
+    cmake ../ && \
+    cmake --build . && \
+    make install && \
+    cd ../ && \
+    mkdir -p /etc/udev/rules.d && \
+    cp 99-openfpgaloader.rules /etc/udev/rules.d/ && \
+    cd ../
+
+# For working in Distrobox or similar environments
+# Reload the udev rules and activate them
+# sudo udevadm control --reload-rules && sudo udevadm trigger # force udev to take new rule
+# Add the current user to the plugdev group
+# sudo usermod -a $USER -G plugdev # add user to plugdev group
