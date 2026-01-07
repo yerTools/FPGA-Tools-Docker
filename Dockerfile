@@ -176,6 +176,10 @@ RUN apt-get update -y && \
     cp 99-openfpgaloader.rules /etc/udev/rules.d/ && \
     cd ../
 
+# Add desktop entry for Gowin IDE
+COPY gowin.desktop /usr/share/applications/gowin.desktop
+RUN chmod 644 /usr/share/applications/gowin.desktop
+
 # For working in Distrobox or similar environments
 # Reload the udev rules and activate them
 # sudo udevadm control --reload-rules && sudo udevadm trigger # force udev to take new rule
