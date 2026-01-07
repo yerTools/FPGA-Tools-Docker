@@ -27,10 +27,15 @@ FROM ubuntu:latest
 
 LABEL maintainer="FelixM@yer.tools"
 
-# Build Gowin Education
+# Install basic dependencies
 RUN apt-get update -y && \
-    apt-get install wget -y
+    apt-get install -y \
+    wget \
+    build-essential \
+    git \
+    usbutils 
 
+# Build Gowin Education
 RUN wget https://cdn.gowinsemi.com.cn/Gowin_V1.9.10.03_Education_linux.tar.gz && \
     mkdir gowin && \
     tar -xf Gowin_V1.9.10.03_Education_linux.tar.gz -C gowin
