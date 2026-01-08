@@ -90,7 +90,7 @@ jobs:
             verible-verilog-lint --version
             
             echo '=== Testing openFPGALoader ==='
-            openFPGALoader --version
+            openFPGALoader --help
             
             echo '=== Testing Python packages ==='
             pip list

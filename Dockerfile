@@ -198,7 +198,7 @@ RUN set -e && \
     yosys -V && \
     verilator --version && \
     verible-verilog-lint --version && \
-    openFPGALoader --version && \
+    openFPGALoader --help && \
     which gw_ide && \
     which gw_sh && \
     pip list && \
