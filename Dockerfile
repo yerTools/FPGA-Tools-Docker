@@ -38,7 +38,8 @@ RUN apt-get update -y && \
 # Build Gowin Education
 RUN wget https://cdn.gowinsemi.com.cn/Gowin_V1.9.10.03_Education_linux.tar.gz && \
     mkdir gowin && \
-    tar -xf Gowin_V1.9.10.03_Education_linux.tar.gz -C gowin
+    tar -xf Gowin_V1.9.10.03_Education_linux.tar.gz -C gowin && \
+    rm Gowin_V1.9.10.03_Education_linux.tar.gz
 
 # Fix libz.so.1 conflict
 RUN mv gowin/Programmer/bin/libz.so.1 gowin/Programmer/bin/libz.so.1.bak
@@ -68,7 +69,8 @@ RUN git clone https://github.com/steveicarus/iverilog && \
     ./configure && \
     make check && \
     make install && \
-    cd ../
+    cd ../ && \
+    rm -rf iverilog
 
 # Build Yosys
 RUN apt-get update -y && \
@@ -95,7 +97,8 @@ RUN git clone --recurse-submodules https://github.com/YosysHQ/yosys.git && \
     cd yosys && \
     make && \
     make install && \
-    cd ../
+    cd ../ && \
+    rm -rf yosys
 
 # Build Verilator
 RUN apt-get update -y && \
@@ -121,7 +124,8 @@ RUN git clone https://github.com/verilator/verilator && \
     ./configure && \
     make -j `nproc` && \
     make install && \
-    cd ../
+    cd ../ && \
+    rm -rf verilator
 
 # Build Bazel (for Verible)
 RUN apt install apt-transport-https curl gnupg -y && \
@@ -137,7 +141,9 @@ RUN apt install bazel-7.6.0 -y && \
     cd verible && \
     bazel build -c opt :install-binaries && \
     .github/bin/simple-install.sh ../usr/local/bin && \
-    cd ../
+    cd ../ && \
+    rm -rf verible && \
+    rm -rf /root/.cache/bazel
 
 RUN apt-get update -y && \
     apt-get install -y \
@@ -174,11 +180,29 @@ RUN apt-get update -y && \
     cd ../ && \
     mkdir -p /etc/udev/rules.d && \
     cp 99-openfpgaloader.rules /etc/udev/rules.d/ && \
-    cd ../
+    cd ../ && \
+    rm -rf openFPGALoader
 
 # Add desktop entry for Gowin IDE
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop
+
+# Final cleanup to reduce image size
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
+
+# Smoke test - verify all tools are installed correctly
+RUN set -e && \
+    echo "=== Smoke Test ===" && \
+    iverilog -V && \
+    yosys -V && \
+    verilator --version && \
+    verible-verilog-lint --version && \
+    openFPGALoader --version && \
+    which gw_ide && \
+    which gw_sh && \
+    pip list && \
+    echo "✅ All tools verified!"
 
 # For working in Distrobox or similar environments
 # Reload the udev rules and activate them
