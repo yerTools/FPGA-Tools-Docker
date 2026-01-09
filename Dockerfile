@@ -183,9 +183,28 @@ RUN apt-get update -y && \
     cd ../ && \
     rm -rf openFPGALoader
 
+# Install PulseView and sigrok for Logic Analyzers (e.g., Sipeed SLogic16U3)
+RUN apt-get update -y && \
+    apt-get install -y \
+    pulseview \
+    sigrok \
+    sigrok-cli \
+    libsigrok-dev \
+    sigrok-firmware-fx2lafw
+
+# Install udev rules for sigrok-supported devices
+RUN wget -O /etc/udev/rules.d/60-libsigrok.rules \
+    https://raw.githubusercontent.com/sigrokproject/libsigrok/master/contrib/60-libsigrok.rules && \
+    wget -O /etc/udev/rules.d/61-libsigrok-plugdev.rules \
+    https://raw.githubusercontent.com/sigrokproject/libsigrok/master/contrib/61-libsigrok-plugdev.rules
+
 # Add desktop entry for Gowin IDE
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop
+
+# Add desktop entry for PulseView
+COPY pulseview.desktop /usr/share/applications/pulseview.desktop
+RUN chmod 644 /usr/share/applications/pulseview.desktop
 
 # Final cleanup to reduce image size
 RUN apt-get clean && \
@@ -199,6 +218,8 @@ RUN set -e && \
     verilator --version && \
     verible-verilog-lint --version && \
     openFPGALoader --help && \
+    pulseview --version && \
+    sigrok-cli --version && \
     which gw_ide && \
     which gw_sh && \
     pip list && \

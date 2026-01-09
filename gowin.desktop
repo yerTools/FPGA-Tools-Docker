@@ -2,6 +2,7 @@
 Name=Gowin FPGA IDE
 Comment=Development Environment for Gowin FPGAs
 Exec=/gowin/IDE/bin/gw_ide
+Icon=/gowin/IDE/bin/gw_ide
 Terminal=false
 Type=Application
 Categories=Development;Electronics;Engineering;

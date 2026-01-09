@@ -92,6 +92,12 @@ jobs:
             echo '=== Testing openFPGALoader ==='
             openFPGALoader --help
             
+            echo '=== Testing PulseView ==='
+            pulseview --version
+            
+            echo '=== Testing sigrok-cli ==='
+            sigrok-cli --version
+            
             echo '=== Testing Python packages ==='
             pip list
             

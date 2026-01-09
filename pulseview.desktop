@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=PulseView
+GenericName=Logic Analyzer
+Comment=Signal analysis software for logic analyzers
+Exec=pulseview
+Icon=pulseview
+Terminal=false
+Type=Application
+Categories=Development;Electronics;Engineering;
+Keywords=logic;analyzer;sigrok;oscilloscope;protocol;decoder;
