@@ -218,7 +218,7 @@ RUN set -e && \
     verilator --version && \
     verible-verilog-lint --version && \
     openFPGALoader --help && \
-    pulseview --version && \
+    QT_QPA_PLATFORM=offscreen pulseview --version && \
     sigrok-cli --version && \
     which gw_ide && \
     which gw_sh && \

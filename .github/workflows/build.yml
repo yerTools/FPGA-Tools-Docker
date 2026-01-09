@@ -93,7 +93,7 @@ jobs:
             openFPGALoader --help
             
             echo '=== Testing PulseView ==='
-            pulseview --version
+            QT_QPA_PLATFORM=offscreen pulseview --version
             
             echo '=== Testing sigrok-cli ==='
             sigrok-cli --version
