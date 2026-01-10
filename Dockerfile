@@ -208,10 +208,6 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop
 
-# Add desktop entry for PulseView
-COPY pulseview.desktop /usr/share/applications/pulseview.desktop
-RUN chmod 644 /usr/share/applications/pulseview.desktop
-
 # Final cleanup to reduce image size
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
