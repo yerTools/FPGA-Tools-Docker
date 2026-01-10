@@ -198,6 +198,12 @@ RUN wget -O /etc/udev/rules.d/60-libsigrok.rules \
     wget -O /etc/udev/rules.d/61-libsigrok-plugdev.rules \
     https://raw.githubusercontent.com/sigrokproject/libsigrok/master/contrib/61-libsigrok-plugdev.rules
 
+# Install Visual Studio Code (GUI + CLI)
+RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/packages.microsoft.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list && \
+    apt-get update -y && \
+    apt-get install -y code
+
 # Add desktop entry for Gowin IDE
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop

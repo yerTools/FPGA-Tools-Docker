@@ -29,6 +29,7 @@
 - [openFPGALoader](https://github.com/trabucayre/openFPGALoader.git) - Universal utility for programming FPGAs. Compatible with many boards including Sipeed Tang series.
 - [PulseView](https://sigrok.org/wiki/PulseView) - Qt-based logic analyzer, oscilloscope and MSO GUI for sigrok.
 - [sigrok-cli](https://sigrok.org/wiki/Sigrok-cli) - Command-line frontend for sigrok. Supports logic analyzers like the Sipeed SLogic16U3.
+- [Visual Studio Code](https://code.visualstudio.com/) - Editor/IDE for working with your HDL projects inside the container.
 
 ## Installation
 
@@ -69,6 +70,7 @@ distrobox enter fpga-tools
 distrobox enter fpga-tools
 distrobox-export --app gw_ide
 distrobox-export --app pulseview
+distrobox-export --app code
 ```
 
 ### USB Device Access
