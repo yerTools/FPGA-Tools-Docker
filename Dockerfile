@@ -38,7 +38,7 @@ RUN apt-get update -y && \
     kmod \
     sudo
 
-RUN # If any group uses GID 1000, delete it unless it's already 'distrobox_user'
+RUN set -eux; \
     if getent group 1000 >/dev/null 2>&1; then \
         existing_group=$(getent group 1000 | cut -d: -f1); \
         if [ "${existing_group}" != "distrobox_user" ]; then \
@@ -59,7 +59,7 @@ RUN # If any group uses GID 1000, delete it unless it's already 'distrobox_user'
     # Create the user 'distrobox_user' with UID 1000 and primary group 'distrobox_user'.
     if ! id -u distrobox_user >/dev/null 2>&1; then \
         useradd -u 1000 -g distrobox_user -m -d /home/distrobox_user distrobox_user; \
-    fi && \
+    fi; \
     mkdir -p /home/distrobox_user && chown -R 1000:1000 /home/distrobox_user
 
 # Allow the distrobox user to run sudo without password (useful in Distrobox setups)
