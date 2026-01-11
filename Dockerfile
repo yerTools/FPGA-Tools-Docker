@@ -34,7 +34,17 @@ RUN apt-get update -y && \
     build-essential \
     git \
     usbutils \
-    fuse
+    fuse \
+    kmod \
+    sudo
+
+RUN groupadd -g 1000 distrobox_user && \
+    useradd -u 1000 -g distrobox_user -m distrobox_user && \
+    mkdir -p /home/distrobox_user
+
+# Allow the distrobox user to run sudo without password (useful in Distrobox setups)
+RUN echo 'distrobox_user ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/distrobox_user && \
+    chmod 0440 /etc/sudoers.d/distrobox_user
 
 # Build Gowin Education
 RUN wget https://cdn.gowinsemi.com.cn/Gowin_V1.9.10.03_Education_linux.tar.gz && \
@@ -212,6 +222,12 @@ RUN chmod 644 /usr/share/applications/gowin.desktop
 # Final cleanup to reduce image size
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
+
+# Ensure the distrobox user owns the installed tool directories and virtualenv
+RUN chown -R 1000:1000 /gowin /usr/local /opt/venv /home/distrobox_user || true
+
+# Switch to the distrobox user (UID 1000)
+USER distrobox_user
 
 # Smoke test - verify all tools are installed correctly
 RUN set -e && \
