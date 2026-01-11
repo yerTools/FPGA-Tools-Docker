@@ -38,9 +38,14 @@ RUN apt-get update -y && \
     kmod \
     sudo
 
-RUN groupadd -g 1000 distrobox_user && \
-    useradd -u 1000 -g distrobox_user -m distrobox_user && \
-    mkdir -p /home/distrobox_user
+RUN if ! getent group 1000 >/dev/null 2>&1; then \
+        groupadd -g 1000 distrobox_user; \
+    fi && \
+    if ! getent passwd 1000 >/dev/null 2>&1; then \
+        # Use GID 1000 (existing group) to avoid failure if group name differs
+        useradd -u 1000 -g 1000 -m -d /home/distrobox_user distrobox_user; \
+    fi && \
+    mkdir -p /home/distrobox_user && chown -R 1000:1000 /home/distrobox_user
 
 # Allow the distrobox user to run sudo without password (useful in Distrobox setups)
 RUN echo 'distrobox_user ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/distrobox_user && \
