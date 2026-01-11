@@ -39,22 +39,23 @@ RUN apt-get update -y && \
     sudo
 
 RUN set -eux; \
+    # If a user with UID 1000 exists and is not 'distrobox_user', delete that user first
+    if getent passwd 1000 >/dev/null 2>&1; then \
+        existing_user=$(getent passwd 1000 | cut -d: -f1); \
+        if [ "${existing_user}" != "distrobox_user" ]; then \
+            userdel -r "${existing_user}" || true; \
+        fi; \
+    fi; \
+    # If a group with GID 1000 exists and is not 'distrobox_user', delete it
     if getent group 1000 >/dev/null 2>&1; then \
         existing_group=$(getent group 1000 | cut -d: -f1); \
         if [ "${existing_group}" != "distrobox_user" ]; then \
             groupdel "${existing_group}" || true; \
         fi; \
     fi; \
-    # Create the group 'distrobox_user' with GID 1000 (force).
+    # Create the group 'distrobox_user' with GID 1000
     if ! getent group distrobox_user >/dev/null 2>&1; then \
         groupadd -g 1000 distrobox_user; \
-    fi; \
-    # If any user uses UID 1000, delete it unless it's already 'distrobox_user'
-    if getent passwd 1000 >/dev/null 2>&1; then \
-        existing_user=$(getent passwd 1000 | cut -d: -f1); \
-        if [ "${existing_user}" != "distrobox_user" ]; then \
-            userdel -r "${existing_user}" || true; \
-        fi; \
     fi; \
     # Create the user 'distrobox_user' with UID 1000 and primary group 'distrobox_user'.
     if ! id -u distrobox_user >/dev/null 2>&1; then \
