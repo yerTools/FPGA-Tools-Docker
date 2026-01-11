@@ -38,12 +38,27 @@ RUN apt-get update -y && \
     kmod \
     sudo
 
-RUN if ! getent group 1000 >/dev/null 2>&1; then \
+RUN # If any group uses GID 1000, delete it unless it's already 'distrobox_user'
+    if getent group 1000 >/dev/null 2>&1; then \
+        existing_group=$(getent group 1000 | cut -d: -f1); \
+        if [ "${existing_group}" != "distrobox_user" ]; then \
+            groupdel "${existing_group}" || true; \
+        fi; \
+    fi; \
+    # Create the group 'distrobox_user' with GID 1000 (force).
+    if ! getent group distrobox_user >/dev/null 2>&1; then \
         groupadd -g 1000 distrobox_user; \
-    fi && \
-    if ! getent passwd 1000 >/dev/null 2>&1; then \
-        # Use GID 1000 (existing group) to avoid failure if group name differs
-        useradd -u 1000 -g 1000 -m -d /home/distrobox_user distrobox_user; \
+    fi; \
+    # If any user uses UID 1000, delete it unless it's already 'distrobox_user'
+    if getent passwd 1000 >/dev/null 2>&1; then \
+        existing_user=$(getent passwd 1000 | cut -d: -f1); \
+        if [ "${existing_user}" != "distrobox_user" ]; then \
+            userdel -r "${existing_user}" || true; \
+        fi; \
+    fi; \
+    # Create the user 'distrobox_user' with UID 1000 and primary group 'distrobox_user'.
+    if ! id -u distrobox_user >/dev/null 2>&1; then \
+        useradd -u 1000 -g distrobox_user -m -d /home/distrobox_user distrobox_user; \
     fi && \
     mkdir -p /home/distrobox_user && chown -R 1000:1000 /home/distrobox_user
 
