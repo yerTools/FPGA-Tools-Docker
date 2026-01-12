@@ -1,0 +1,12 @@
+[Desktop Entry]
+# Creative Commons CC0 1.0 Universal (CC0-1.0, Public Domain Dedication).
+Name=SLogic PulseView
+GenericName=Logic analyzer, oscilloscope and MSO GUI
+Categories=Development;Electronics;
+Comment=Control your logic analyzer, oscilloscope, or MSO
+Exec=/etc-data/applications/PulseView-SLogic-251216-x86_64.AppImage
+Icon=/etc-data/applications/PulseView-SLogic-251216-x86_64.AppImage
+Type=Application
+MimeType=application/vnd.sigrok.session;
+Terminal=false
+StartupNotify=true

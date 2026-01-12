@@ -240,6 +240,14 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop
 
+# Install SLogic PulseView AppImage for better compatibility with Logic Analyzers
+RUN mkdir -p /etc-data/applications
+COPY PulseView-SLogic-251216-x86_64.AppImage /etc-data/applications/PulseView-SLogic-251216-x86_64.AppImage
+COPY 60-sipeed-slogic.rules /etc/udev/rules.d/60-sipeed-slogic.rules
+COPY slogic-pulseview.desktop /usr/share/applications/slogic-pulseview.desktop
+RUN chmod +x /etc-data/applications/PulseView-SLogic-251216-x86_64.AppImage
+ENV PATH="/etc-data/applications:$PATH"
+
 # Install OSS CAD Suite
 # https://github.com/YosysHQ/oss-cad-suite-build
 RUN wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2026-01-12/oss-cad-suite-linux-x64-20260112.tgz && \

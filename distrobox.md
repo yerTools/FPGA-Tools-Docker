@@ -16,7 +16,7 @@ Execute inside the Distrobox Container:
 
 ```bash
 distrobox-export --app /usr/share/applications/gowin.desktop && \
-    distrobox-export --app /usr/share/applications/org.sigrok.PulseView.desktop && \
+    distrobox-export --app /usr/share/applications/slogic-pulseview.desktop && \
     distrobox-export --app /usr/share/applications/code.desktop && \
     code --install-extension trag1c.gleam-theme && \
     code --install-extension ms-vscode.cpptools && \
