@@ -1,0 +1,5 @@
+{
+    "workbench.colorTheme": "Gleam",
+    "editor.formatOnSave": true,
+    "lushay.OssCadSuite.path": "/opt/oss-cad-suite/bin"
+}

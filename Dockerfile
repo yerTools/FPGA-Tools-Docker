@@ -240,12 +240,23 @@ RUN wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 COPY gowin.desktop /usr/share/applications/gowin.desktop
 RUN chmod 644 /usr/share/applications/gowin.desktop
 
+# Install OSS CAD Suite
+# https://github.com/YosysHQ/oss-cad-suite-build
+RUN wget https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2026-01-12/oss-cad-suite-linux-x64-20260112.tgz && \
+    mkdir -p /opt && \
+    tar -xzf oss-cad-suite-linux-x64-20260112.tgz -C /opt && \
+    rm oss-cad-suite-linux-x64-20260112.tgz
+ENV PATH="/opt/oss-cad-suite/bin:$PATH"
+
 # Final cleanup to reduce image size
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /root/.cache
 
+RUN mkdir -p /etc-data/code
+COPY settings.json /etc-data/code/settings.json
+
 # Ensure the distrobox user owns the installed tool directories and virtualenv
-RUN chown -R 1000:1000 /gowin /usr/local /opt/venv /home/distrobox_user || true
+RUN chown -R 1000:1000 /gowin /usr/local /opt/venv /home/distrobox_user /opt/oss-cad-suite /etc-data || true
 
 # Switch to the distrobox user (UID 1000)
 USER distrobox_user
